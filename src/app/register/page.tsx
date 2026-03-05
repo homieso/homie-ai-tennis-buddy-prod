@@ -192,7 +192,7 @@ export default function RegisterPage() {
           value={formData.message_to_homie}
           onChange={handleInputChange}
           placeholder={currentConfig.placeholder}
-          className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent resize-none min-h-[120px] clay-input"
+          className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent resize-none min-h-[120px] clay-input"
           rows={4}
         />
       )
@@ -220,7 +220,7 @@ export default function RegisterPage() {
         }
         onChange={handleInputChange}
         placeholder={currentConfig.placeholder}
-        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent text-center text-lg clay-input"
+        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent text-center text-lg clay-input"
         autoComplete="off"
       />
     )
@@ -243,7 +243,7 @@ export default function RegisterPage() {
         value={formData.email}
         onChange={handleInputChange}
         placeholder="邮箱地址"
-        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
+        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
         autoComplete="email"
       />
       <motion.input
@@ -256,7 +256,7 @@ export default function RegisterPage() {
         value={formData.password}
         onChange={handleInputChange}
         placeholder="密码（至少6位）"
-        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
+        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
         autoComplete="new-password"
       />
       <motion.input
@@ -269,7 +269,7 @@ export default function RegisterPage() {
         value={formData.confirmPassword}
         onChange={handleInputChange}
         placeholder="确认密码"
-        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
+        className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
         autoComplete="new-password"
       />
     </motion.div>

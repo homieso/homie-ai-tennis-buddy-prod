@@ -70,11 +70,11 @@ function DashboardPage() {
         }
       } else if (error) {
         console.error('查询profile失败:', error)
-        if (isMounted.current) setNickname(user.email?.split('@')[0] || '伙伴')
+        if (isMounted) setNickname(user.email?.split('@')[0] || '伙伴')
       } else {
         // profile已存在，获取昵称
         const nickname = data.nickname || data.username || user.email?.split('@')[0] || '伙伴'
-        if (isMounted.current) setNickname(nickname)
+        if (isMounted) setNickname(nickname)
       }
     }
 

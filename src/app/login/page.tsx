@@ -126,7 +126,7 @@ export default function LoginPage() {
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
+              className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
               placeholder="邮箱地址"
             />
             <input
@@ -137,7 +137,7 @@ export default function LoginPage() {
               required
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-[#1E293B] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
+              className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent clay-input"
               placeholder="密码"
             />
           </div>

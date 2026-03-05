@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
 
     // 4. 插入反馈到数据库
     console.log('准备插入反馈:', { user_id: user.id, content: content.trim() })
+    console.log('Supabase URL 前缀:', process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30))
+
     const { data, error } = await supabase
       .from('feedback')
       .insert({
@@ -37,6 +39,7 @@ export async function POST(request: NextRequest) {
       .select()
 
     console.log('插入结果:', { data, error })
+    console.log('错误详情:', error?.message, error?.details, error?.hint)
 
     if (error) {
       console.error('插入反馈失败:', error)
