@@ -43,6 +43,9 @@ export default function RootLayout({
         <div className="pt-16">
           {children}
         </div>
+
+        {/* 部署版本标识（用于调试） */}
+        <div hidden data-deploy-version={process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'local'} />
       </body>
     </html>
   );

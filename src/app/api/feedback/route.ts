@@ -27,24 +27,34 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. 插入反馈到数据库
-    console.log('准备插入反馈:', { user_id: user.id, content: content.trim() })
-    console.log('Supabase URL 前缀:', process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30))
+    console.log('准备插入反馈:', {
+      user_id: user.id,
+      content: content.trim(),
+      supabase_url: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 50),
+      timestamp: new Date().toISOString()
+    })
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('feedback')
       .insert({
         user_id: user.id,
         content: content.trim(),
       })
-      .select()
 
-    console.log('插入结果:', { data, error })
-    console.log('错误详情:', error?.message, error?.details, error?.hint)
+    console.log('插入错误:', error)
+    console.log('错误详情:', error?.message, error?.details, error?.hint, error?.code)
 
     if (error) {
-      console.error('插入反馈失败:', error)
+      console.error('插入反馈失败:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        user_id: user.id,
+        content_length: content.trim().length
+      })
       return NextResponse.json(
-        { error: `保存反馈失败: ${error.message}` },
+        { error: `保存反馈失败: ${error.message} (代码: ${error.code})` },
         { status: 500 }
       )
     }
