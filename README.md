@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI网球搭子 (AI Tennis Buddy)
+一个温暖的网球AI陪伴应用，帮助初学者度过学习瓶颈期。Homie学长陪你练球、记录进步、提供情绪支持。
 
-## Getting Started
+## 技术栈
+- **前端框架**：Next.js 14 (App Router) + Tailwind CSS
+- **后端**：Supabase (PostgreSQL, Auth, Storage)
+- **AI引擎**：DeepSeek API
+- **支付**：Stripe (国际) + 激活码 (国内)
+- **部署**：Vercel
 
-First, run the development server:
+## 本地开发
+1. 克隆仓库：`git clone https://github.com/homieso/homie-ai-tennis-buddy.git`
+2. 安装依赖：`npm install`
+3. 复制 `.env.example` 为 `.env.local`，填入必要的环境变量（参见 `.env.example`）。
+4. 运行开发服务器：`npm run dev`
+5. 访问 `http://localhost:3000`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 环境变量说明
+请参考 `.env.example` 文件。所有密钥请勿提交到Git。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 部署
+推荐使用Vercel一键部署：
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/homieso/homie-ai-tennis-buddy)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 贡献指南
+欢迎提交Issue和Pull Request。请确保代码通过ESLint和TypeScript检查。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 许可证
+MIT License

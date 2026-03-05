@@ -46,8 +46,18 @@ function NewGoalPage() {
         throw new Error(data.error || '未知错误')
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '请求失败，请重试'
-      setError(message)
+      console.error('生成目标失败:', err)
+      let errorMessage = '请求失败，请重试'
+      if (err instanceof Error) {
+        if (err.name === 'TypeError' && err.message.includes('Load failed')) {
+          errorMessage = '网络连接失败，请检查网络后重试'
+        } else if (err.message.includes('Failed to fetch') || err.name === 'TypeError') {
+          errorMessage = '网络连接失败，请稍后重试'
+        } else {
+          errorMessage = err.message
+        }
+      }
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -59,29 +69,43 @@ function NewGoalPage() {
     setLoading(true)
     setError('')
 
-    // 计算本周周一的日期
-    const today = new Date()
-    const monday = startOfWeek(today, { weekStartsOn: 1 }) // 周一作为一周开始
-    const weekStartDate = format(monday, 'yyyy-MM-dd')
+    try {
+      // 计算本周周一的日期
+      const today = new Date()
+      const monday = startOfWeek(today, { weekStartsOn: 1 }) // 周一作为一周开始
+      const weekStartDate = format(monday, 'yyyy-MM-dd')
 
-    const supabase = createClient()
-    const { error: insertError } = await supabase
-      .from('weekly_goals')
-      .insert({
-        user_id: user.id,
-        week_start_date: weekStartDate,
-        next_lesson_time: nextLessonTime,
-        confusion,
-        core_goal: aiSuggestion.coreGoal,
-        micro_exercises: aiSuggestion.microExercises,
-        emotion_reminder: aiSuggestion.emotionReminder
-      })
+      const supabase = createClient()
+      const { error: insertError } = await supabase
+        .from('weekly_goals')
+        .insert({
+          user_id: user.id,
+          week_start_date: weekStartDate,
+          next_lesson_time: nextLessonTime,
+          confusion,
+          core_goal: aiSuggestion.coreGoal,
+          micro_exercises: aiSuggestion.microExercises,
+          emotion_reminder: aiSuggestion.emotionReminder
+        })
 
-    if (insertError) {
-      setError(insertError.message)
-      setLoading(false)
-    } else {
+      if (insertError) {
+        throw new Error(insertError.message)
+      }
+
       router.push('/goals')
+    } catch (err: unknown) {
+      console.error('保存目标失败:', err)
+      let errorMessage = '保存失败，请重试'
+      if (err instanceof Error) {
+        if (err.message.includes('Failed to fetch') || err.name === 'TypeError') {
+          errorMessage = '网络连接失败，请检查网络后重试'
+        } else {
+          errorMessage = err.message
+        }
+      }
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -108,7 +132,7 @@ function NewGoalPage() {
                     type="datetime-local"
                     value={nextLessonTime}
                     onChange={(e) => setNextLessonTime(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all text-gray-900"
                     required
                   />
                 </div>
@@ -122,7 +146,7 @@ function NewGoalPage() {
                     value={confusion}
                     onChange={(e) => setConfusion(e.target.value)}
                     rows={5}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all text-gray-900"
                     placeholder="例如：反手总是打不准，发球不稳定..."
                     required
                   />

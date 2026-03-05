@@ -297,7 +297,7 @@ function SubscribePage() {
                       value={activationCode}
                       onChange={(e) => setActivationCode(e.target.value)}
                       placeholder="请输入激活码"
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none text-lg"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none text-lg text-gray-900"
                     />
                   </div>
 

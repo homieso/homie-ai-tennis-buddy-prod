@@ -104,7 +104,7 @@ function NewPracticePage() {
                     value={coachContent}
                     onChange={(e) => setCoachContent(e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all text-gray-900"
                     placeholder="例如：今天教练教了正手挥拍动作..."
                     required
                   />
@@ -119,7 +119,7 @@ function NewPracticePage() {
                     value={bestShot}
                     onChange={(e) => setBestShot(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all text-gray-900"
                     placeholder="例如：有一次正手直线穿越，感觉特别流畅"
                     required
                   />
@@ -134,7 +134,7 @@ function NewPracticePage() {
                     value={worstShot}
                     onChange={(e) => setWorstShot(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all text-gray-900"
                     placeholder="例如：反手总是下网，找不到感觉"
                     required
                   />

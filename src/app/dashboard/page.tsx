@@ -306,7 +306,7 @@ function DashboardPage() {
           {/* 快速入口 */}
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">其他功能</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Link
                 href="/practice"
                 className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-100"
@@ -314,6 +314,15 @@ function DashboardPage() {
                 <div className="text-3xl mb-4">📝</div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">练习日志</h3>
                 <p className="text-gray-600">查看历史记录，追踪进步轨迹</p>
+              </Link>
+
+              <Link
+                href="/goals"
+                className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-100"
+              >
+                <div className="text-3xl mb-4">🎯</div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">周目标</h3>
+                <p className="text-gray-600">查看你设定的每周目标和微练习</p>
               </Link>
 
               <Link
@@ -385,7 +394,7 @@ function DashboardPage() {
                   value={feedbackContent}
                   onChange={(e) => setFeedbackContent(e.target.value)}
                   placeholder="告诉我们你的想法、建议或遇到的问题..."
-                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[150px] text-gray-700 placeholder-gray-400"
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[150px] text-gray-900 placeholder-gray-400"
                   disabled={submittingFeedback}
                 />
 

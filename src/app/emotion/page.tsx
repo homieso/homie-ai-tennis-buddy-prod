@@ -212,7 +212,7 @@ function EmotionPage() {
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder="描述你遇到的困难..."
-              className="w-full p-4 bg-white/80 backdrop-blur-sm border-2 border-blue-200 rounded-2xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[120px] text-gray-700 placeholder-gray-400"
+              className="w-full p-4 bg-white/80 backdrop-blur-sm border-2 border-blue-200 rounded-2xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[120px] text-gray-900 placeholder-gray-400"
               disabled={loading}
             />
             <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
