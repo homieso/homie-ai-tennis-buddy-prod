@@ -18,9 +18,11 @@ function DashboardPage() {
   const [feedbackContent, setFeedbackContent] = useState('')
   const [submittingFeedback, setSubmittingFeedback] = useState(false)
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null)
-  const isMounted = useRef(true)
+  const isMountedRef = useRef(true)
 
   useEffect(() => {
+    let isMounted = true
+
     // Set greeting based on time of day
     const hour = new Date().getHours()
     if (hour < 12) setGreeting('早上好')
@@ -38,7 +40,7 @@ function DashboardPage() {
         .eq('id', user.id)
         .single()
 
-      if (!isMounted.current) return
+      if (!isMounted) return
 
       if (error && error.code === 'PGRST116') { // 记录不存在
         // 创建profile，设置14天免费试用
@@ -57,14 +59,14 @@ function DashboardPage() {
             updated_at: new Date().toISOString()
           })
 
-        if (!isMounted.current) return
+        if (!isMounted) return
 
         if (insertError) {
           console.error('创建profile失败:', insertError)
-          if (isMounted.current) setNickname(username)
+          if (isMounted) setNickname(username)
         } else {
           console.log('profile创建成功，14天免费试用已激活')
-          if (isMounted.current) setNickname(username)
+          if (isMounted) setNickname(username)
         }
       } else if (error) {
         console.error('查询profile失败:', error)
@@ -95,7 +97,7 @@ function DashboardPage() {
           .limit(1)
       ])
 
-      if (!isMounted.current) return
+      if (!isMounted) return
 
       const practiceDate = practiceRes.data?.[0]?.created_at
       const goalsDate = goalsRes.data?.[0]?.created_at
@@ -113,7 +115,7 @@ function DashboardPage() {
         const today = new Date()
         const diffTime = today.getTime() - latestDate.getTime()
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-        if (isMounted.current) {
+        if (isMounted) {
           setDaysAgo(diffDays)
           if (diffDays >= 10) {
             setShowReminder(true)
@@ -126,7 +128,7 @@ function DashboardPage() {
     checkInactivity()
 
     return () => {
-      isMounted.current = false
+      isMounted = false
     }
   }, [user])
 
@@ -175,7 +177,7 @@ function DashboardPage() {
 
       // 3秒后自动关闭模态框
       setTimeout(() => {
-        if (isMounted.current) {
+        if (isMountedRef.current) {
           setShowFeedbackModal(false)
         }
       }, 3000)

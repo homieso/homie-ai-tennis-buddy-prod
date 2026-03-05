@@ -17,6 +17,7 @@ function PracticePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
     if (!user) return
 
     const fetchLogs = async () => {
@@ -27,6 +28,8 @@ function PracticePage() {
         .eq('user_id', user.id)
         .order('log_date', { ascending: false })
 
+      if (!isMounted) return
+
       if (error) {
         console.error('获取日志失败:', error)
       } else {
@@ -36,6 +39,10 @@ function PracticePage() {
     }
 
     fetchLogs()
+
+    return () => {
+      isMounted = false
+    }
   }, [user])
 
   if (loading) {

@@ -25,6 +25,7 @@ function SubscribePage() {
 
   // 获取会员状态
   useEffect(() => {
+    let isMounted = true
     if (!user) return
 
     const fetchMembershipStatus = async () => {
@@ -36,6 +37,8 @@ function SubscribePage() {
           .select('membership_valid_until')
           .eq('id', user.id)
           .single()
+
+        if (!isMounted) return
 
         if (error) {
           console.error('获取会员状态失败:', error)
@@ -51,13 +54,21 @@ function SubscribePage() {
         }
       } catch (err) {
         console.error('获取会员状态异常:', err)
-        setStatus({ is_member: false, membership_valid_until: null })
+        if (isMounted) {
+          setStatus({ is_member: false, membership_valid_until: null })
+        }
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
     fetchMembershipStatus()
+
+    return () => {
+      isMounted = false
+    }
   }, [user])
 
   // 使用 Stripe 订阅

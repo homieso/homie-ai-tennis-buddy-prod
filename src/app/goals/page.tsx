@@ -17,6 +17,7 @@ function GoalsPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
     if (!user) return
 
     const fetchGoals = async () => {
@@ -27,6 +28,8 @@ function GoalsPage() {
         .eq('user_id', user.id)
         .order('week_start_date', { ascending: false })
 
+      if (!isMounted) return
+
       if (error) {
         console.error('获取目标失败:', error)
       } else {
@@ -36,6 +39,10 @@ function GoalsPage() {
     }
 
     fetchGoals()
+
+    return () => {
+      isMounted = false
+    }
   }, [user])
 
   if (loading) {
