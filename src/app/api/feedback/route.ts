@@ -5,9 +5,17 @@ export async function POST(request: NextRequest) {
   try {
     // 1. 创建 Supabase 客户端并获取当前用户
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-    if (!user) {
+    console.log('反馈API用户认证结果:', {
+      hasUser: !!user,
+      userId: user?.id?.substring(0, 8) + '...',
+      userError: userError ? { message: userError.message, code: userError.code } : null,
+      timestamp: new Date().toISOString()
+    })
+
+    if (userError || !user) {
+      console.error('反馈API: 用户未认证', userError || '用户对象为空')
       return NextResponse.json(
         { error: '请先登录' },
         { status: 401 }
