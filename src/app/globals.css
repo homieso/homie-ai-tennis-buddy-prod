@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* 主题色 */
+  --primary-light: #F3E8FF;
+  --secondary-light: #FFE4E6;
+  --bg-light: #FDF4F5;
+  --text-soft: #4B5563;
+  --accent-blue: #4A90E2;
+  --accent-purple: #9C7BFF;
+  --accent-green: #4CAF7A;
+  --accent-pink: #FF6B9D;
+  --accent-yellow: #FFD166;
+
+  /* 对话框样式 */
+  --dialog-bg: linear-gradient(135deg, #ffffff 0%, #F8FAFF 100%);
+  --dialog-border: #E2E8F0;
+  --dialog-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+
+  /* 动画 */
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --bg-light: #1a1a1a;
+    --text-soft: #a1a1aa;
+  }
+}
+
+@layer base {
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+}
+
+@layer components {
+  .homie-dialog {
+    background: var(--dialog-bg);
+    border: 1px solid var(--dialog-border);
+    box-shadow: var(--dialog-shadow);
+    border-radius: 2rem;
+    position: relative;
+  }
+
+  .homie-dialog::before {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--dialog-bg);
+    border-left: 1px solid var(--dialog-border);
+    border-bottom: 1px solid var(--dialog-border);
+    transform: rotate(45deg);
+  }
+
+  .dialog-tail-left {
+    left: -0.75rem;
+    top: 2rem;
+  }
+
+  .dialog-tail-top {
+    top: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .btn-homie {
+    @apply px-6 py-3 rounded-full font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: white;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  }
+
+  .btn-homie:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+  }
+
+  .btn-homie-secondary {
+    @apply px-6 py-3 rounded-full font-semibold transition-all duration-300;
+    background: white;
+    color: var(--accent-blue);
+    border: 2px solid var(--accent-blue);
+  }
+
+  .btn-homie-secondary:hover {
+    background: var(--accent-blue);
+    color: white;
+  }
+
+  .card-homie {
+    @apply rounded-2xl p-8 transition-all duration-300;
+    background: white;
+    border: 1px solid var(--dialog-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-homie:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-bounce-smooth {
+    animation: bounce-smooth 1s var(--animation-bounce) infinite;
+  }
+
+  .animate-float {
+    animation: float 3s var(--animation-smooth) infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s var(--animation-smooth) infinite;
+  }
+}
+
+@keyframes bounce-smooth {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+}
+
+/* 浮动动画 */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -20px); }
+}
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+.animate-float-slower {
+  animation: float-slow 12s ease-in-out infinite reverse;
+}
+
+.animate-float-medium {
+  animation: float-slow 10s ease-in-out infinite alternate;
+}
+
+/* 颜色脉动动画 */
+@keyframes pulse-color {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.25; }
+}
+
+.animate-pulse-color {
+  animation: pulse-color 5s ease-in-out infinite;
+}
+
+/* Claymorphism 效果 */
+.clay-effect {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.05),
+    8px 8px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.clay-input {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.05),
+    4px 4px 12px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+
+.clay-input:focus {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.05),
+    4px 4px 12px rgba(0, 0, 0, 0.05),
+    0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.clay-button {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.1),
+    4px 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+}
+
+.clay-button:hover {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.15),
+    6px 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.clay-button:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.1),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+  transform: translateY(0);
+}
+
+.clay-button-cta {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+    8px 8px 24px rgba(37, 99, 235, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.clay-button-cta:hover {
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.25),
+    12px 12px 32px rgba(37, 99, 235, 0.4);
+  transform: translateY(-3px);
+}
+
+.clay-button-cta:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.25),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.3);
+  transform: translateY(0);
+}
