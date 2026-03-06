@@ -140,7 +140,7 @@ function NewGoalPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
                     <span className="mr-2">🤔</span>
-                    本周困惑
+                    你在网球学习中遇到了什么困惑？
                   </label>
                   <textarea
                     value={confusion}
@@ -186,6 +186,19 @@ function NewGoalPage() {
               </div>
 
               <div className="space-y-6">
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+                  <h3 className="font-bold text-gray-800 mb-3 flex items-center">
+                    <span className="mr-2">⏰</span> 下次课程时间
+                  </h3>
+                  <p className="text-gray-900 text-lg">{new Date(nextLessonTime).toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    weekday: 'long'
+                  })}</p>
+                </div>
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
                   <h3 className="font-bold text-gray-800 mb-3 flex items-center">
                     <span className="mr-2">⭐</span> 核心目标
@@ -197,7 +210,7 @@ function NewGoalPage() {
                   <h3 className="font-bold text-gray-800 mb-3 flex items-center">
                     <span className="mr-2">💪</span> 微练习清单
                   </h3>
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 mb-4">
                     {aiSuggestion.microExercises.map((ex, i) => (
                       <li key={i} className="flex items-start">
                         <span className="text-yellow-600 mr-2 mt-1">✓</span>
@@ -205,6 +218,35 @@ function NewGoalPage() {
                       </li>
                     ))}
                   </ul>
+                  <div className="mt-4 pt-4 border-t border-yellow-200">
+                    <p className="text-gray-700 mb-2">📺 需要示范吗？点击观看相关教学视频：</p>
+                    <div className="flex flex-wrap gap-2">
+                      <a
+                        href="https://www.youtube.com/results?search_query=网球+正手练习"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        YouTube 正手练习
+                      </a>
+                      <a
+                        href="https://www.youtube.com/results?search_query=网球+反手练习"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        YouTube 反手练习
+                      </a>
+                      <a
+                        href="https://www.youtube.com/results?search_query=网球+发球练习"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        YouTube 发球练习
+                      </a>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-100">

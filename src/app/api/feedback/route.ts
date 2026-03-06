@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,15 +35,28 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 4. 插入反馈到数据库
+    // 4. 创建管理员客户端（绕过RLS）
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
+
+    // 5. 插入反馈到数据库（使用管理员客户端）
     console.log('准备插入反馈:', {
       user_id: user.id,
       content: content.trim(),
       supabase_url: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 50),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      using_admin_client: true
     })
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('feedback')
       .insert({
         user_id: user.id,

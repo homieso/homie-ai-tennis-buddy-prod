@@ -8,6 +8,8 @@ import Link from 'next/link'
 import { withAuth } from '@/lib/auth/auth'
 import HomieAvatar from '@/components/HomieAvatar'
 import LoadingScreen from '@/components/LoadingScreen'
+import { format, differenceInDays } from 'date-fns'
+import { zhCN } from 'date-fns/locale'
 
 type PracticeLog = Database['public']['Tables']['practice_logs']['Row']
 
@@ -15,6 +17,25 @@ function PracticePage() {
   const { user } = useAuth()
   const [logs, setLogs] = useState<PracticeLog[]>([])
   const [loading, setLoading] = useState(true)
+
+  // 格式化日志日期，添加相对时间（如“昨天”）
+  const formatLogDate = (dateString: string) => {
+    const logDate = new Date(dateString)
+    const today = new Date()
+    const diffDays = differenceInDays(today, logDate)
+
+    let prefix = ''
+    if (diffDays === 0) {
+      prefix = '今天'
+    } else if (diffDays === 1) {
+      prefix = '昨天'
+    } else if (diffDays === 2) {
+      prefix = '前天'
+    }
+
+    const formattedDate = format(logDate, 'yyyy年M月d日EEEE', { locale: zhCN })
+    return prefix ? `${prefix} ${formattedDate}` : formattedDate
+  }
 
   useEffect(() => {
     let isMounted = true
@@ -56,7 +77,7 @@ function PracticePage() {
         <div className="flex items-center gap-4 mb-8">
           <HomieAvatar variant="writing" size="md" />
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">练习日志</h1>
+            <h1 className="text-3xl font-bold text-gray-800">练习日志 - {format(new Date(), 'yyyy年M月d日EEEE', { locale: zhCN })}</h1>
             <p className="text-gray-600 mt-1">今天有哪些进步？写下来吧！</p>
           </div>
         </div>
@@ -65,7 +86,7 @@ function PracticePage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">我的练习记录</h2>
+            <h2 className="text-2xl font-bold text-gray-800">我的练习记录 - {format(new Date(), 'yyyy年M月d日EEEE', { locale: zhCN })}</h2>
             <p className="text-gray-600">回顾过去，才能更好前进</p>
           </div>
           <Link
@@ -96,7 +117,7 @@ function PracticePage() {
               <div key={log.id} className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border border-gray-100">
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-lg font-bold text-gray-800">
-                    {new Date(log.log_date).toLocaleDateString('zh-CN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    {formatLogDate(log.log_date)}
                   </div>
                   <div className="text-sm text-gray-500">
                     {new Date(log.log_date).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}

@@ -148,7 +148,7 @@ function GoalsPage() {
 
                     {goal.confusion && (
                       <div className="bg-purple-50 rounded-xl p-4">
-                        <div className="font-medium text-gray-700 mb-1">需要澄清的困惑</div>
+                        <div className="font-medium text-gray-700 mb-1">你在网球学习中遇到了什么困惑？</div>
                         <div className="text-gray-800">{goal.confusion}</div>
                       </div>
                     )}
