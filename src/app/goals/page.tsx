@@ -140,8 +140,15 @@ function GoalsPage() {
                     {goal.next_lesson_time && (
                       <div className="bg-blue-50 rounded-xl p-4">
                         <div className="font-medium text-gray-700 mb-1">下次课程时间</div>
-                        <div className="text-gray-800">
-                          {new Date(goal.next_lesson_time).toLocaleString('zh-CN', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        <div className="text-gray-900">
+                          {new Date(goal.next_lesson_time).toLocaleString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            weekday: 'long'
+                          })}
                         </div>
                       </div>
                     )}

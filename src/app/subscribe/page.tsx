@@ -296,7 +296,7 @@ function SubscribePage() {
                     </li>
                     <li className="flex items-center">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full flex items-center justify-center mr-3">✓</div>
-                      <span className="text-gray-700 font-medium">激活码兑换会员特权</span>
+                      <span className="text-gray-700 font-medium">激活码兑换会员解锁专属功能</span>
                     </li>
                   </ul>
                 </div>

@@ -18,7 +18,7 @@ function PracticePage() {
   const [logs, setLogs] = useState<PracticeLog[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 格式化日志日期，添加相对时间（如“昨天”）
+  // 格式化日志日期，添加相对时间（如"昨天"）
   const formatLogDate = (dateString: string) => {
     const logDate = new Date(dateString)
     const today = new Date()
@@ -35,6 +35,12 @@ function PracticePage() {
 
     const formattedDate = format(logDate, 'yyyy年M月d日EEEE', { locale: zhCN })
     return prefix ? `${prefix} ${formattedDate}` : formattedDate
+  }
+
+  // 格式化创建时间（显示具体填写时间）
+  const formatCreatedTime = (timestamp: string) => {
+    const date = new Date(timestamp)
+    return format(date, 'HH:mm', { locale: zhCN })
   }
 
   useEffect(() => {
@@ -120,7 +126,7 @@ function PracticePage() {
                     {formatLogDate(log.log_date)}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {new Date(log.log_date).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                    {formatCreatedTime(log.created_at)}
                   </div>
                 </div>
 
