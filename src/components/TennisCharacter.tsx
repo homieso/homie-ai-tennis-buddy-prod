@@ -120,7 +120,7 @@ const TennisCharacter: React.FC<TennisCharacterProps> = ({
                 }
               }}
               whileHover={{ scale: 1.03, y: -5 }}
-              className="w-full h-full object-contain drop-shadow-2xl select-none cursor-pointer"
+              className="w-full h-full object-contain drop-shadow-2xl select-none cursor-pointer transform-gpu backface-visibility-hidden"
               onClick={onAvatarClick}
               style={{
                 animation: currentStatus === 'celebrate'

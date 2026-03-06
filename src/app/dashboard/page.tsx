@@ -258,7 +258,7 @@ function DashboardPage() {
                     <div className="w-12 h-12 flex items-center justify-center bg-blue-500 text-white rounded-xl mr-4 group-hover:scale-110 transition-transform">
                       🎾
                     </div>
-                    <div>
+                    <div className="text-center">
                       <h3 className="font-bold text-gray-800">记录今天的练习</h3>
                       <p className="text-sm text-gray-600">写下你的进步和感受</p>
                     </div>
@@ -271,7 +271,7 @@ function DashboardPage() {
                     <div className="w-12 h-12 flex items-center justify-center bg-green-500 text-white rounded-xl mr-4 group-hover:scale-110 transition-transform">
                       📅
                     </div>
-                    <div>
+                    <div className="text-center">
                       <h3 className="font-bold text-gray-800">看看本周目标</h3>
                       <p className="text-sm text-gray-600">制定或查看你的计划</p>
                     </div>
@@ -284,7 +284,7 @@ function DashboardPage() {
                     <div className="w-12 h-12 flex items-center justify-center bg-purple-500 text-white rounded-xl mr-4 group-hover:scale-110 transition-transform">
                       🤗
                     </div>
-                    <div>
+                    <div className="text-center">
                       <h3 className="font-bold text-gray-800">我需要鼓励</h3>
                       <p className="text-sm text-gray-600">Homie 给你打气</p>
                     </div>
