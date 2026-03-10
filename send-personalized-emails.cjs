@@ -9,8 +9,16 @@ const supabase = createClient(
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// 测试邮箱，不发送
-const TEST_EMAIL = 'suhaoming010@qq.com';
+// 需要排除的测试邮箱（生产模式中不发送）
+const EXCLUDED_EMAILS = [
+  'test@example.com',      // 测试账号
+  'suhaoming010@qq.com'    // 开发者测试账号（如果存在）
+];
+
+// 运行模式：true=测试模式（只发送给指定邮箱），false=生产模式（排除测试邮箱）
+const TEST_MODE = false;
+// 测试模式下发送给此邮箱
+const TEST_TARGET_EMAIL = '384373358@qq.com';
 
 // 生成个性化鼓励语
 function generatePersonalizedEncouragement(user, hasPracticeToday) {
@@ -104,11 +112,11 @@ async function sendPersonalizedEmails() {
       return;
     }
 
-    // 构建用户列表，合并auth和profiles信息，排除测试邮箱
+    // 构建用户列表，合并auth和profiles信息
     const users = [];
     for (const profile of profiles) {
       const authUser = authUsers.users.find(u => u.id === profile.id);
-      if (authUser && authUser.email && authUser.email !== TEST_EMAIL) {
+      if (authUser && authUser.email) {
         users.push({
           id: profile.id,
           email: authUser.email,
@@ -121,10 +129,28 @@ async function sendPersonalizedEmails() {
       }
     }
 
-    console.log(`成功构建 ${users.length} 个用户数据（已排除测试邮箱 ${TEST_EMAIL}）`);
+    console.log(`成功构建 ${users.length} 个用户数据`);
 
-    if (users.length === 0) {
-      console.log('没有找到有效的用户邮箱');
+    // 打印用户邮箱用于调试
+    console.log('用户邮箱列表:');
+    users.forEach((user, index) => {
+      console.log(`  ${index + 1}. ${user.email} (${user.nickname})`);
+    });
+
+    // 过滤用户：测试模式只发送给指定邮箱，生产模式排除测试邮箱
+    const filteredUsers = TEST_MODE
+      ? users.filter(user => user.email === TEST_TARGET_EMAIL)
+      : users.filter(user => !EXCLUDED_EMAILS.includes(user.email));
+
+    console.log(`${TEST_MODE ? '测试模式' : '生产模式'}: 将处理 ${filteredUsers.length} 个用户`);
+    if (TEST_MODE) {
+      console.log(`测试目标邮箱: ${TEST_TARGET_EMAIL}`);
+    } else {
+      console.log(`排除的邮箱: ${EXCLUDED_EMAILS.join(', ')}`);
+    }
+
+    if (filteredUsers.length === 0) {
+      console.log('没有需要发送邮件的用户');
       return;
     }
 
@@ -132,7 +158,7 @@ async function sendPersonalizedEmails() {
     let successCount = 0;
     let failCount = 0;
 
-    for (const user of users) {
+    for (const user of filteredUsers) {
       try {
         console.log(`处理用户: ${user.email} (${user.nickname})`);
 
@@ -216,7 +242,8 @@ async function sendPersonalizedEmails() {
     console.log(`\n邮件发送完成:`);
     console.log(`成功: ${successCount}`);
     console.log(`失败: ${failCount}`);
-    console.log(`总计: ${users.length}`);
+    console.log(`总计: ${filteredUsers.length}`);
+    console.log(`模式: ${TEST_MODE ? `测试模式（仅发送给 ${TEST_TARGET_EMAIL}）` : `生产模式（排除: ${EXCLUDED_EMAILS.join(', ')}）`}`);
   } catch (error) {
     console.error('发送邮件过程中出现错误:', error);
   }
