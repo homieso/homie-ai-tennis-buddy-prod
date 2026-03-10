@@ -43,13 +43,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 根据配置的邮件服务选择发送方式
-    let response
     if (emailService === 'resend' || !process.env.EMAIL_SERVICE) {
       // 使用Resend发送邮件
-      response = await sendWithResend({ to, subject, html, text, apiKey })
+      await sendWithResend({ to, subject, html, text, apiKey })
     } else if (emailService === 'sendgrid') {
       // 使用SendGrid发送邮件
-      response = await sendWithSendGrid({ to, subject, html, text, apiKey })
+      await sendWithSendGrid({ to, subject, html, text, apiKey })
     } else {
       return NextResponse.json(
         { error: '不支持的邮件服务', message: `不支持的邮件服务: ${emailService}` },
@@ -140,9 +139,9 @@ async function sendWithResend({
 async function sendWithSendGrid({
   to,
   subject,
-  html,
-  text,
-  apiKey
+  html: _html, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  text: _text, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  apiKey: _apiKey // eslint-disable-next-line @typescript-eslint/no-unused-vars
 }: {
   to: string
   subject: string
@@ -152,6 +151,9 @@ async function sendWithSendGrid({
 }) {
   // 实际实现需要用户提供SendGrid API密钥
   // 这里是占位实现
+  void _html;
+  void _text;
+  void _apiKey;
   console.log(`[SendGrid占位] 准备发送邮件到: ${to}，主题: ${subject}`)
 
   // 模拟API调用

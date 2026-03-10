@@ -193,12 +193,22 @@ export async function GET(request: NextRequest) {
 }
 
 // 生成个性化鼓励语
-async function generatePersonalizedEncouragement(user: Record<string, unknown>): Promise<string> {
+interface UserInfo {
+  nickname?: unknown;
+  age_range?: unknown;
+  playing_years_range?: unknown;
+  user_preferences?: unknown;
+}
+
+async function generatePersonalizedEncouragement(user: UserInfo): Promise<string> {
   try {
     // 这里可以调用DeepSeek API生成个性化鼓励语
     // 为了简化，我们先使用模板
 
-    const { nickname, age_range, playing_years_range, user_preferences } = user
+    const nickname = typeof user.nickname === 'string' ? user.nickname : '球友'
+    const age_range = typeof user.age_range === 'string' ? user.age_range : undefined
+    const playing_years_range = typeof user.playing_years_range === 'string' ? user.playing_years_range : undefined
+    const user_preferences = Array.isArray(user.user_preferences) ? user.user_preferences as string[] : []
 
     // 基础鼓励语
     let baseMessage = `嘿${nickname}！今天也是努力练球的一天！💪`
@@ -252,7 +262,8 @@ async function generatePersonalizedEncouragement(user: Record<string, unknown>):
 
   } catch (error) {
     console.error('生成鼓励语失败，使用默认消息:', error)
-    return `嘿${user.nickname}！今天是打网球的好天气，别忘了去球场挥洒汗水！🎾\n\n—— 你的AI网球搭子`
+    const fallbackNickname = typeof user.nickname === 'string' ? user.nickname : '球友'
+    return `嘿${fallbackNickname}！今天是打网球的好天气，别忘了去球场挥洒汗水！🎾\n\n—— 你的AI网球搭子`
   }
 }
 

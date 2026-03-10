@@ -180,7 +180,7 @@ function DashboardPage() {
 
     try {
       // 构建请求体
-      const requestBody: any = {
+      const requestBody = {
         content: feedbackContent.trim() || '用户通过选项提交反馈',
         preferences: selectedPreferences
       }

@@ -211,7 +211,8 @@ export default function RegisterPage() {
         name="nickname"
         value={formData.nickname}
         onChange={handleInputChange}
-        placeholder={currentConfig.placeholder}
+        // @ts-expect-error step 1 config has placeholder property
+        placeholder={currentConfig?.placeholder || ''}
         className="w-full px-6 py-4 bg-white/90 backdrop-blur-sm rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent text-center text-lg clay-input"
         autoComplete="off"
       />
