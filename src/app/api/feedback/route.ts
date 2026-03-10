@@ -25,12 +25,12 @@ export async function POST(request: NextRequest) {
 
     // 2. 解析请求体
     const body = await request.json()
-    const { content } = body
+    const { content, preferences } = body
 
-    // 3. 验证必需字段
-    if (!content || content.trim().length === 0) {
+    // 3. 验证必需字段 - 现在允许通过preferences提交反馈
+    if ((!content || content.trim().length === 0) && (!preferences || !Array.isArray(preferences) || preferences.length === 0)) {
       return NextResponse.json(
-        { error: '反馈内容不能为空' },
+        { error: '反馈内容不能为空，请至少选择一项偏好或填写反馈内容' },
         { status: 400 }
       )
     }
@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       .insert({
         user_id: user.id,
         content: content.trim(),
+        preferences: preferences && Array.isArray(preferences) && preferences.length > 0 ? preferences : null
       })
 
     console.log('插入错误:', error)

@@ -10,13 +10,8 @@ export async function POST(request: NextRequest) {
       email,
       password,
       nickname,
-      age, // 旧字段，保持兼容
-      age_range, // 新字段：年龄范围
-      playing_years, // 旧字段，保持兼容
-      playing_years_range, // 新字段：球龄范围
-      user_preferences = [], // 新字段：用户偏好（多选）
-      other_preference = '', // 新字段：其他偏好文本
-      email_notifications = true, // 新字段：邮件通知同意
+      age,
+      playing_years,
       message_to_homie
     } = body
 
@@ -69,12 +64,6 @@ export async function POST(request: NextRequest) {
     const profileData: Database['public']['Tables']['profiles']['Insert'] & {
       nickname?: string | null
       age?: number | null
-      age_range?: string | null
-      playing_years?: string | null
-      playing_years_range?: string | null
-      user_preferences?: string[] | null
-      other_preference?: string | null
-      email_notifications?: boolean | null
       message_to_homie?: string | null
       created_at: string
       updated_at: string
@@ -82,14 +71,8 @@ export async function POST(request: NextRequest) {
       id: user.id,
       username: nickname || null, // 使用 username 字段存储昵称
       nickname: nickname || null,
-      // 保持向后兼容：如果新字段存在则使用新字段，否则使用旧字段
-      age: age_range ? null : (age ? parseInt(age, 10) : null), // 如果有age_range，则age设为null
-      age_range: age_range || null,
-      playing_years: playing_years_range ? null : (playing_years || null), // 如果有新字段，旧字段设为null
-      playing_years_range: playing_years_range || null,
-      user_preferences: user_preferences.length > 0 ? user_preferences : null,
-      other_preference: other_preference || null,
-      email_notifications: email_notifications,
+      age: age ? parseInt(age, 10) : null,
+      playing_years: playing_years || null,
       message_to_homie: message_to_homie || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

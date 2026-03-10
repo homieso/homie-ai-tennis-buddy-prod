@@ -16,9 +16,19 @@ function DashboardPage() {
   const [nickname, setNickname] = useState('')
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const [feedbackContent, setFeedbackContent] = useState('')
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([])
   const [submittingFeedback, setSubmittingFeedback] = useState(false)
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null)
   const isMountedRef = useRef(true)
+
+  // 反馈偏好选项
+  const preferenceOptions = [
+    { id: 'remind-practice', label: '提醒练球' },
+    { id: 'analyze-video', label: '分析动作视频' },
+    { id: 'find-buddies', label: '约球友' },
+    { id: 'answer-questions', label: '解答疑惑' },
+    { id: 'other', label: '其他' }
+  ]
 
   useEffect(() => {
     let isMounted = true
@@ -144,12 +154,24 @@ function DashboardPage() {
   const handleCloseFeedback = () => {
     setShowFeedbackModal(false)
     setFeedbackContent('')
+    setSelectedPreferences([])
     setFeedbackMessage(null)
   }
 
+  const togglePreference = (preferenceId: string) => {
+    setSelectedPreferences(prev => {
+      if (prev.includes(preferenceId)) {
+        return prev.filter(id => id !== preferenceId)
+      } else {
+        return [...prev, preferenceId]
+      }
+    })
+  }
+
   const handleSubmitFeedback = async () => {
-    if (!feedbackContent.trim()) {
-      setFeedbackMessage('反馈内容不能为空')
+    // 如果没有选择任何偏好且反馈内容为空，则显示错误
+    if (selectedPreferences.length === 0 && !feedbackContent.trim()) {
+      setFeedbackMessage('请至少选择一项偏好或填写反馈内容')
       return
     }
 
@@ -157,12 +179,18 @@ function DashboardPage() {
     setFeedbackMessage(null)
 
     try {
+      // 构建请求体
+      const requestBody: any = {
+        content: feedbackContent.trim() || '用户通过选项提交反馈',
+        preferences: selectedPreferences
+      }
+
       const response = await fetch('/api/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: feedbackContent.trim() }),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()
@@ -174,6 +202,7 @@ function DashboardPage() {
 
       setFeedbackMessage('感谢你的反馈！我们会认真考虑你的建议。')
       setFeedbackContent('')
+      setSelectedPreferences([])
 
       // 3秒后自动关闭模态框
       setTimeout(() => {
@@ -389,16 +418,49 @@ function DashboardPage() {
                 <div className="mb-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-lg">
                   <p className="font-medium text-slate-700 mb-2">这是一个测试版产品，Stripe 支付为沙盒模式，实际支付无效。</p>
                   <p>但你的反馈对我们至关重要！每月5美元即可解锁更多Homie陪伴，你是否愿意支持？</p>
-                  <p className="mt-2">欢迎留言告诉我们你的想法，或者直接在下方写下你的反馈。</p>
+                  <p className="mt-2">为了更好为你服务，请告诉我们你希望 Homie 在哪些方面帮助你：</p>
                 </div>
 
-                <textarea
-                  value={feedbackContent}
-                  onChange={(e) => setFeedbackContent(e.target.value)}
-                  placeholder="告诉我们你的想法、建议或遇到的问题..."
-                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[150px] text-gray-900 placeholder-gray-400"
-                  disabled={submittingFeedback}
-                />
+                {/* 偏好选项 */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-800 mb-3">你希望 Homie 在哪些方面帮助你？（可多选）</h4>
+                  <div className="space-y-2">
+                    {preferenceOptions.map((option) => (
+                      <label
+                        key={option.id}
+                        className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${selectedPreferences.includes(option.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedPreferences.includes(option.id)}
+                          onChange={() => togglePreference(option.id)}
+                          className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          disabled={submittingFeedback}
+                        />
+                        <span className="ml-3 text-gray-700">{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 其他反馈 */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-800 mb-3">其他想法或建议：</h4>
+                  <textarea
+                    value={feedbackContent}
+                    onChange={(e) => setFeedbackContent(e.target.value)}
+                    placeholder="告诉我们你的想法、建议或遇到的问题..."
+                    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[120px] text-gray-900 placeholder-gray-400"
+                    disabled={submittingFeedback}
+                  />
+                  <p className="text-sm text-gray-500 mt-2">
+                    {selectedPreferences.length === 0 && !feedbackContent.trim()
+                      ? '请至少选择一项偏好或填写反馈内容'
+                      : selectedPreferences.length > 0
+                      ? `已选择 ${selectedPreferences.length} 项偏好`
+                      : '你可以在这里写下详细的反馈'}
+                  </p>
+                </div>
 
                 {feedbackMessage && (
                   <div className={`mt-4 p-3 rounded-lg ${feedbackMessage.includes('感谢') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
@@ -416,10 +478,10 @@ function DashboardPage() {
                   </button>
                   <button
                     onClick={handleSubmitFeedback}
-                    disabled={submittingFeedback || !feedbackContent.trim()}
+                    disabled={submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())}
                     className={`
                       px-6 py-2 rounded-xl font-medium transition-all
-                      ${submittingFeedback || !feedbackContent.trim()
+                      ${submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700'
                       }

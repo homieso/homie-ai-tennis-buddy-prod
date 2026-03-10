@@ -21,6 +21,12 @@ export interface Database {
           membership_valid_until: string | null
           nickname: string | null
           age: number | null
+          age_range: string | null
+          playing_years_range: string | null
+          user_preferences: string[] | null
+          other_preference: string | null
+          email_notifications: boolean | null
+          last_email_sent: string | null
           message_to_homie: string | null
         }
         Insert: {
@@ -34,6 +40,12 @@ export interface Database {
           membership_valid_until?: string | null
           nickname?: string | null
           age?: number | null
+          age_range?: string | null
+          playing_years_range?: string | null
+          user_preferences?: string[] | null
+          other_preference?: string | null
+          email_notifications?: boolean | null
+          last_email_sent?: string | null
           message_to_homie?: string | null
         }
         Update: {
@@ -47,6 +59,12 @@ export interface Database {
           membership_valid_until?: string | null
           nickname?: string | null
           age?: number | null
+          age_range?: string | null
+          playing_years_range?: string | null
+          user_preferences?: string[] | null
+          other_preference?: string | null
+          email_notifications?: boolean | null
+          last_email_sent?: string | null
           message_to_homie?: string | null
         }
         Relationships: [
@@ -214,18 +232,21 @@ export interface Database {
           id: string
           user_id: string | null
           content: string
+          preferences: Json | null
           created_at: string
         }
         Insert: {
           id?: string
           user_id?: string | null
           content: string
+          preferences?: Json | null
           created_at?: string
         }
         Update: {
           id?: string
           user_id?: string | null
           content?: string
+          preferences?: Json | null
           created_at?: string
         }
         Relationships: [

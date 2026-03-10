@@ -1,12 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. 解析请求体
+    // 1. 用户认证
+    const supabase = createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+    if (userError || !user) {
+      console.error('用户未认证:', userError)
+      return NextResponse.json(
+        { error: '请先登录' },
+        { status: 401 }
+      )
+    }
+
+    // 2. 获取用户个性化信息
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('nickname, age_range, playing_years_range, user_preferences')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError) {
+      console.error('获取用户资料失败:', profileError)
+      // 继续执行，使用默认值
+    }
+
+    // 3. 解析请求体
     const body = await request.json()
     const { nextLessonTime, confusion } = body
 
-    // 2. 验证必需字段
+    // 4. 验证必需字段
     if (!nextLessonTime || !confusion) {
       return NextResponse.json(
         { error: '缺少必需字段：nextLessonTime 或 confusion' },
@@ -14,7 +39,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. 获取 API Key
+    // 5. 获取 API Key
     const apiKey = process.env.DEEPSEEK_API_KEY
     if (!apiKey) {
       console.error('DEEPSEEK_API_KEY 环境变量未设置')
@@ -24,15 +49,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 4. 构建提示词
-    const prompt = `你是一位网球学长 Homie，帮助初学者制定每周目标。用户的下次课程时间是 ${nextLessonTime}，本周困惑是 ${confusion}。请生成：
-- 一个核心目标（具体、可执行）
-- 两个微练习（简单易行，可以在家或球场练习）
-- 一个情绪提醒（温柔鼓励的话）
+    // 6. 构建个性化提示词
+    const nickname = profile?.nickname || '球友'
+    const ageRange = profile?.age_range || '未知'
+    const playingYearsRange = profile?.playing_years_range || '未知'
+    const userPreferences = profile?.user_preferences || []
+
+    // 构建个性化描述
+    let personalization = ''
+    if (ageRange !== '未知') {
+      personalization += `用户年龄阶段：${ageRange}。`
+    }
+    if (playingYearsRange !== '未知') {
+      personalization += `球龄阶段：${playingYearsRange}。`
+    }
+    if (userPreferences && userPreferences.length > 0) {
+      personalization += `用户偏好：${userPreferences.join('、')}。`
+    }
+
+    const prompt = `你是一位网球学长 Homie，帮助${nickname}制定每周目标。${personalization}用户的下次课程时间是 ${nextLessonTime}，本周困惑是 ${confusion}。请生成：
+- 一个核心目标（具体、可执行，考虑用户的年龄和球龄阶段）
+- 两个微练习（简单易行，可以在家或球场练习，适应用户的偏好）
+- 一个情绪提醒（温柔鼓励的话，适应用户的偏好和个性）
 
 请以 JSON 格式输出：{ "coreGoal": "...", "microExercises": ["...", "..."], "emotionReminder": "..." }`
 
-    // 5. 调用 DeepSeek API
+    // 7. 调用 DeepSeek API
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -44,7 +86,7 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'system',
-            content: '你是一位经验丰富的网球学长，擅长为初学者制定个性化的学习目标和练习计划。请始终以 JSON 格式回复。'
+            content: '你是一位经验丰富的网球学长，擅长为不同年龄和水平的球友制定个性化的学习目标和练习计划。请根据用户的个性化信息（年龄、球龄、偏好）提供定制建议。请始终以 JSON 格式回复。'
           },
           {
             role: 'user',
@@ -68,7 +110,7 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json()
 
-    // 6. 解析 AI 响应
+    // 8. 解析 AI 响应
     const aiResponse = data.choices?.[0]?.message?.content
     if (!aiResponse) {
       throw new Error('AI 响应格式无效')
@@ -92,7 +134,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 7. 验证响应结构
+    // 9. 验证响应结构
     if (!goalData.coreGoal || !Array.isArray(goalData.microExercises) || !goalData.emotionReminder) {
       console.warn('AI 响应结构不完整:', goalData)
       // 提供默认值或返回错误
@@ -110,7 +152,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 8. 返回成功响应
+    // 10. 返回成功响应
     return NextResponse.json({
       success: true,
       data: {
