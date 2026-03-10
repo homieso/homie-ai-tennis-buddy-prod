@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 记录邮件发送日志（可选）
-    console.log(`邮件发送成功：${to}，类型：${emailType || 'unknown'}`)
+    console.log(`邮件发送成功：${to}，用户：${userId || 'unknown'}，类型：${emailType || 'unknown'}`)
 
     return NextResponse.json({
       success: true,

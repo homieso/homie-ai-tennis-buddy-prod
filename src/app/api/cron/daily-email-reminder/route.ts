@@ -44,11 +44,11 @@ export async function GET(request: NextRequest) {
     // 条件：email_notifications = true，且last_email_sent为null或超过24小时
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
-    const { data: users, error: usersError } = await supabaseAdmin
+    // 首先查询需要发送邮件的用户profiles
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('profiles')
       .select(`
         id,
-        email,
         nickname,
         age_range,
         playing_years_range,
@@ -59,10 +59,51 @@ export async function GET(request: NextRequest) {
       .or(`last_email_sent.is.null,last_email_sent.lt.${twentyFourHoursAgo}`)
       .limit(100) // 每次最多处理100个用户，防止超时
 
-    if (usersError) {
-      console.error('查询用户失败:', usersError)
-      throw new Error(`查询用户失败: ${usersError.message}`)
+    if (profilesError) {
+      console.error('查询用户profiles失败:', profilesError)
+      throw new Error(`查询用户profiles失败: ${profilesError.message}`)
     }
+
+    console.log(`找到 ${profiles?.length || 0} 个需要发送邮件的用户档案`)
+
+    if (!profiles || profiles.length === 0) {
+      return NextResponse.json({
+        success: true,
+        message: '没有需要发送邮件的用户',
+        users_processed: 0,
+        timestamp: new Date().toISOString()
+      })
+    }
+
+    // 获取用户的邮箱地址
+    const users = []
+    for (const profile of profiles) {
+      try {
+        // 通过admin API获取用户邮箱
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.getUserById(profile.id)
+
+        if (authError) {
+          console.error(`获取用户 ${profile.id} 的邮箱失败:`, authError)
+          continue // 跳过这个用户
+        }
+
+        if (authData && authData.user && authData.user.email) {
+          users.push({
+            id: profile.id,
+            email: authData.user.email,
+            nickname: profile.nickname,
+            age_range: profile.age_range,
+            playing_years_range: profile.playing_years_range,
+            user_preferences: profile.user_preferences,
+            last_email_sent: profile.last_email_sent
+          })
+        }
+      } catch (error) {
+        console.error(`处理用户 ${profile.id} 时出错:`, error)
+      }
+    }
+
+    console.log(`成功获取 ${users.length} 个用户的邮箱地址`)
 
     console.log(`找到 ${users?.length || 0} 个需要发送邮件的用户`)
 
@@ -152,7 +193,7 @@ export async function GET(request: NextRequest) {
 }
 
 // 生成个性化鼓励语
-async function generatePersonalizedEncouragement(user: any): Promise<string> {
+async function generatePersonalizedEncouragement(user: Record<string, unknown>): Promise<string> {
   try {
     // 这里可以调用DeepSeek API生成个性化鼓励语
     // 为了简化，我们先使用模板
@@ -161,6 +202,17 @@ async function generatePersonalizedEncouragement(user: any): Promise<string> {
 
     // 基础鼓励语
     let baseMessage = `嘿${nickname}！今天也是努力练球的一天！💪`
+
+    // 根据年龄段个性化
+    if (age_range === '18岁以下') {
+      baseMessage += ' 年轻就是资本，多练习会有很大进步！'
+    } else if (age_range === '18-25岁') {
+      baseMessage += ' 大学时期是提升球技的黄金时间，好好把握！'
+    } else if (age_range === '25-35岁') {
+      baseMessage += ' 工作之余打打球，既能锻炼身体又能放松心情！'
+    } else if (age_range === '35岁以上') {
+      baseMessage += ' 年龄不是问题，享受网球带来的乐趣最重要！'
+    }
 
     // 根据球龄段个性化
     if (playing_years_range === '0-1年') {
