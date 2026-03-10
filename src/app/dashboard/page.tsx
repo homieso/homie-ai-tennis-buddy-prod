@@ -402,8 +402,8 @@ function DashboardPage() {
         {/* 反馈模态框 */}
         {showFeedbackModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden">
-              <div className="flex justify-between items-center p-6 border-b">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md min-h-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center p-6 border-b shrink-0">
                 <h3 className="text-xl font-bold text-gray-800">给 Homie 留言</h3>
                 <button
                   onClick={handleCloseFeedback}
@@ -414,81 +414,85 @@ function DashboardPage() {
                 </button>
               </div>
 
-              <div className="p-6">
-                <div className="mb-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-lg">
-                  <p className="font-medium text-slate-700 mb-2">这是一个测试版产品，Stripe 支付为沙盒模式，实际支付无效。</p>
-                  <p>但你的反馈对我们至关重要！每月5美元即可解锁更多Homie陪伴，你是否愿意支持？</p>
-                  <p className="mt-2">为了更好为你服务，请告诉我们你希望 Homie 在哪些方面帮助你：</p>
-                </div>
-
-                {/* 偏好选项 */}
-                <div className="mb-6">
-                  <h4 className="font-medium text-gray-800 mb-3">你希望 Homie 在哪些方面帮助你？（可多选）</h4>
-                  <div className="space-y-2">
-                    {preferenceOptions.map((option) => (
-                      <label
-                        key={option.id}
-                        className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${selectedPreferences.includes(option.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedPreferences.includes(option.id)}
-                          onChange={() => togglePreference(option.id)}
-                          className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                          disabled={submittingFeedback}
-                        />
-                        <span className="ml-3 text-gray-700">{option.label}</span>
-                      </label>
-                    ))}
+              <div className="flex flex-col h-full">
+                <div className="overflow-y-auto p-6 flex-grow">
+                  <div className="mb-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-lg">
+                    <p className="font-medium text-slate-700 mb-2">这是一个测试版产品，Stripe 支付为沙盒模式，实际支付无效。</p>
+                    <p>但你的反馈对我们至关重要！每月5美元即可解锁更多Homie陪伴，你是否愿意支持？</p>
+                    <p className="mt-2">为了更好为你服务，请告诉我们你希望 Homie 在哪些方面帮助你：</p>
                   </div>
-                </div>
 
-                {/* 其他反馈 */}
-                <div className="mb-6">
-                  <h4 className="font-medium text-gray-800 mb-3">其他想法或建议：</h4>
-                  <textarea
-                    value={feedbackContent}
-                    onChange={(e) => setFeedbackContent(e.target.value)}
-                    placeholder="告诉我们你的想法、建议或遇到的问题..."
-                    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[120px] text-gray-900 placeholder-gray-400"
-                    disabled={submittingFeedback}
-                  />
-                  <p className="text-sm text-gray-500 mt-2">
-                    {selectedPreferences.length === 0 && !feedbackContent.trim()
-                      ? '请至少选择一项偏好或填写反馈内容'
-                      : selectedPreferences.length > 0
-                      ? `已选择 ${selectedPreferences.length} 项偏好`
-                      : '你可以在这里写下详细的反馈'}
-                  </p>
-                </div>
-
-                {feedbackMessage && (
-                  <div className={`mt-4 p-3 rounded-lg ${feedbackMessage.includes('感谢') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                    {feedbackMessage}
+                  {/* 偏好选项 */}
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-800 mb-3">你希望 Homie 在哪些方面帮助你？（可多选）</h4>
+                    <div className="space-y-2">
+                      {preferenceOptions.map((option) => (
+                        <label
+                          key={option.id}
+                          className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${selectedPreferences.includes(option.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedPreferences.includes(option.id)}
+                            onChange={() => togglePreference(option.id)}
+                            className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            disabled={submittingFeedback}
+                          />
+                          <span className="ml-3 text-gray-700">{option.label}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                )}
 
-                <div className="flex justify-end gap-3 mt-6">
-                  <button
-                    onClick={handleCloseFeedback}
-                    className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
-                    disabled={submittingFeedback}
-                  >
-                    取消
-                  </button>
-                  <button
-                    onClick={handleSubmitFeedback}
-                    disabled={submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())}
-                    className={`
-                      px-6 py-2 rounded-xl font-medium transition-all
-                      ${submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700'
-                      }
-                    `}
-                  >
-                    {submittingFeedback ? '提交中...' : '提交反馈'}
-                  </button>
+                  {/* 其他反馈 */}
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-800 mb-3">其他想法或建议：</h4>
+                    <textarea
+                      value={feedbackContent}
+                      onChange={(e) => setFeedbackContent(e.target.value)}
+                      placeholder="告诉我们你的想法、建议或遇到的问题..."
+                      className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all min-h-[120px] text-gray-900 placeholder-gray-400"
+                      disabled={submittingFeedback}
+                    />
+                    <p className="text-sm text-gray-500 mt-2">
+                      {selectedPreferences.length === 0 && !feedbackContent.trim()
+                        ? '请至少选择一项偏好或填写反馈内容'
+                        : selectedPreferences.length > 0
+                        ? `已选择 ${selectedPreferences.length} 项偏好`
+                        : '你可以在这里写下详细的反馈'}
+                    </p>
+                  </div>
+
+                  {feedbackMessage && (
+                    <div className={`mt-4 p-3 rounded-lg ${feedbackMessage.includes('感谢') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                      {feedbackMessage}
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-6 pt-0 border-t border-gray-100 shrink-0">
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={handleCloseFeedback}
+                      className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+                      disabled={submittingFeedback}
+                    >
+                      取消
+                    </button>
+                    <button
+                      onClick={handleSubmitFeedback}
+                      disabled={submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())}
+                      className={`
+                        px-6 py-2 rounded-xl font-medium transition-all
+                        ${submittingFeedback || (selectedPreferences.length === 0 && !feedbackContent.trim())
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700'
+                        }
+                      `}
+                    >
+                      {submittingFeedback ? '提交中...' : '提交反馈'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
