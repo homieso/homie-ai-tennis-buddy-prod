@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
+import { AGE_OPTIONS } from '@/lib/constants'
 
 interface AgeStepProps {
   value: string
@@ -9,13 +10,7 @@ interface AgeStepProps {
   nickname?: string
 }
 
-const ageOptions = [
-  { value: 'under-18', label: '18岁以下', emoji: '👶' },
-  { value: '18-25', label: '18-25岁', emoji: '🎓' },
-  { value: '26-35', label: '26-35岁', emoji: '💼' },
-  { value: '36-plus', label: '36岁以上', emoji: '👨‍💼' },
-  { value: 'prefer-not-to-say', label: '不愿透露', emoji: '🤐' }
-]
+const ageOptions = AGE_OPTIONS
 
 export default function AgeStep({ value, onChange, nickname }: AgeStepProps) {
   const displayText = nickname

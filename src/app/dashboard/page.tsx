@@ -401,8 +401,8 @@ function DashboardPage() {
 
         {/* 反馈模态框 */}
         {showFeedbackModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md min-h-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md min-h-[400px] max-h-[calc(100vh-2rem)] overflow-hidden flex flex-col">
               <div className="flex justify-between items-center p-6 border-b shrink-0">
                 <h3 className="text-xl font-bold text-gray-800">给 Homie 留言</h3>
                 <button
@@ -429,7 +429,7 @@ function DashboardPage() {
                       {preferenceOptions.map((option) => (
                         <label
                           key={option.id}
-                          className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${selectedPreferences.includes(option.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                          className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all min-h-[44px] ${selectedPreferences.includes(option.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
                         >
                           <input
                             type="checkbox"

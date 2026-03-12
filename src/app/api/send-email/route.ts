@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import {
+  EMAIL_SERVICES,
+  ENV_KEYS,
+  DEFAULTS
+} from '@/lib/constants'
 
 // 邮件服务配置
 // 注意：需要用户提供邮件服务API密钥（Resend、SendGrid或其他）
@@ -27,8 +32,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查邮件服务配置
-    const emailService = process.env.EMAIL_SERVICE || 'resend' // 默认使用Resend
-    const apiKey = process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY || process.env.EMAIL_API_KEY
+    const emailService = process.env[ENV_KEYS.EMAIL_SERVICE] || EMAIL_SERVICES.RESEND // 默认使用Resend
+    const apiKey = process.env[ENV_KEYS.RESEND_API_KEY] || process.env[ENV_KEYS.SENDGRID_API_KEY]
 
     if (!apiKey) {
       console.error('邮件服务API密钥未配置')
@@ -43,10 +48,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 根据配置的邮件服务选择发送方式
-    if (emailService === 'resend' || !process.env.EMAIL_SERVICE) {
+    if (emailService === EMAIL_SERVICES.RESEND || !process.env[ENV_KEYS.EMAIL_SERVICE]) {
       // 使用Resend发送邮件
       await sendWithResend({ to, subject, html, text, apiKey })
-    } else if (emailService === 'sendgrid') {
+    } else if (emailService === EMAIL_SERVICES.SENDGRID) {
       // 使用SendGrid发送邮件
       await sendWithSendGrid({ to, subject, html, text, apiKey })
     } else {
@@ -106,7 +111,7 @@ async function sendWithResend({
     const resend = new Resend(apiKey)
 
     // 发件人邮箱 - 可以从环境变量读取或使用默认值
-    const from = process.env.RESEND_FROM_EMAIL || 'Homie AI <onboarding@resend.dev>'
+    const from = process.env[ENV_KEYS.RESEND_FROM_EMAIL] || DEFAULTS.EMAIL_FROM
 
     const { data, error } = await resend.emails.send({
       from,
@@ -166,8 +171,8 @@ async function sendWithSendGrid({
 
 // 健康检查端点
 export async function GET() {
-  const emailService = process.env.EMAIL_SERVICE || 'resend'
-  const hasApiKey = !!(process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY || process.env.EMAIL_API_KEY)
+  const emailService = process.env[ENV_KEYS.EMAIL_SERVICE] || EMAIL_SERVICES.RESEND
+  const hasApiKey = !!(process.env[ENV_KEYS.RESEND_API_KEY] || process.env[ENV_KEYS.SENDGRID_API_KEY])
 
   return NextResponse.json({
     message: '邮件发送API（占位实现）',

@@ -10,6 +10,7 @@ interface PreferencesStepProps {
   onOtherChange: (value: string) => void
   nickname?: string
   onSkip: () => void
+  onContinue?: () => void  // 继续按钮回调
 }
 
 const preferenceOptions = [
@@ -51,7 +52,8 @@ export default function PreferencesStep({
   onChange,
   onOtherChange,
   nickname,
-  onSkip
+  onSkip,
+  onContinue
 }: PreferencesStepProps) {
   const displayText = nickname
     ? `${nickname}，你希望我主要帮你做什么？我可以同时做多件事！`
@@ -178,9 +180,7 @@ export default function PreferencesStep({
           暂不选择，直接跳过
         </button>
         <button
-          onClick={() => {
-            // 这里不需要额外操作，父组件会处理下一步
-          }}
+          onClick={onContinue}
           className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl font-medium hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-md"
         >
           继续 {values.length > 0 ? `(${values.length}项已选)` : ''}

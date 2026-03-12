@@ -298,6 +298,7 @@ export default function RegisterPage() {
             onOtherChange={(value) => setFormData(prev => ({ ...prev, other_preference: value }))}
             nickname={formData.nickname}
             onSkip={() => setCurrentStep(5)} // 跳过直接到下一步
+            onContinue={handleNextStep} // 继续按钮回调
           />
         )
       case 5:
@@ -338,10 +339,10 @@ export default function RegisterPage() {
       </button>
 
 
-      {/* 左右分栏布局 */}
-      <div className="relative z-10 flex flex-row h-full">
+      {/* 响应式分栏布局 */}
+      <div className="relative z-10 flex flex-col md:flex-row h-full">
         {/* 左侧角色区域 */}
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full md:w-1/2 h-1/3 md:h-full flex items-center justify-center p-4">
           <TennisCharacter
             status={currentConfig.status}
             displayText={currentConfig.text}
@@ -350,92 +351,96 @@ export default function RegisterPage() {
         </div>
 
         {/* 右侧表单区域 */}
-        <div className="w-1/2 flex flex-col items-center justify-center px-6 py-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`step-${currentStep}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              className="w-full max-w-md"
-            >
-              {renderStepContent()}
-            </motion.div>
-          </AnimatePresence>
+        <div className="w-full md:w-1/2 flex-1 overflow-y-auto flex flex-col items-center justify-start px-4 py-6 md:px-6 md:py-8">
+          {/* 主要内容区域（可滚动） */}
+          <div className="w-full max-w-md flex-1 overflow-y-auto pb-24">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`step-${currentStep}`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                className="w-full"
+              >
+                {renderStepContent()}
+              </motion.div>
+            </AnimatePresence>
 
-          {/* 错误信息 */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 px-4 py-2 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center"
-            >
-              {error}
-            </motion.div>
-          )}
+            {/* 错误信息 */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 px-4 py-2 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center"
+              >
+                {error}
+              </motion.div>
+            )}
 
-          {/* 成功信息 */}
-          {success && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm text-center"
-            >
-              注册成功！正在准备欢迎页面...
-            </motion.div>
-          )}
+            {/* 成功信息 */}
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm text-center"
+              >
+                注册成功！正在准备欢迎页面...
+              </motion.div>
+            )}
+          </div>
 
-          {/* 按钮区域（仅步骤1-6显示） */}
+          {/* 按钮区域（固定在底部） */}
           {currentStep < 7 && (
-            <div className="mt-8 flex items-center justify-center space-x-4">
-              {/* 上一步按钮（仅步骤2-6显示） */}
-              {currentStep > 1 && currentStep <= 6 && (
-                <button
-                  onClick={handlePrevStep}
-                  className="px-6 py-3 bg-white/90 text-[#1E293B] rounded-2xl font-medium hover:bg-white transition-all duration-200 clay-button"
-                >
-                  上一步
-                </button>
-              )}
-
-              {/* 下一步/提交按钮 */}
-              <button
-                onClick={currentStep === 6 ? handleSubmit : handleNextStep}
-                disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-white rounded-2xl font-medium hover:from-[#1D4ED8] hover:to-[#2563EB] transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center clay-button-cta"
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    处理中...
-                  </>
-                ) : currentStep === 6 ? (
-                  '完成注册'
-                ) : (
-                  <>
-                    下一步
-                    <span className="ml-2">→</span>
-                  </>
+            <div className="w-full max-w-md mt-auto py-4 bg-gradient-to-t from-white via-white/90 to-transparent sticky bottom-0">
+              <div className="flex items-center justify-center space-x-4">
+                {/* 上一步按钮（仅步骤2-6显示） */}
+                {currentStep > 1 && currentStep <= 6 && (
+                  <button
+                    onClick={handlePrevStep}
+                    className="px-6 py-3 bg-white/90 text-[#1E293B] rounded-2xl font-medium hover:bg-white transition-all duration-200 clay-button shadow-sm"
+                  >
+                    上一步
+                  </button>
                 )}
-              </button>
+
+                {/* 下一步/提交按钮 */}
+                <button
+                  onClick={currentStep === 6 ? handleSubmit : handleNextStep}
+                  disabled={loading}
+                  className="px-8 py-3 bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-white rounded-2xl font-medium hover:from-[#1D4ED8] hover:to-[#2563EB] transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center clay-button-cta"
+                >
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      处理中...
+                    </>
+                  ) : currentStep === 6 ? (
+                    '完成注册'
+                  ) : (
+                    <>
+                      下一步
+                      <span className="ml-2">→</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* 已有账号链接（仅在步骤6显示） */}
+              {currentStep === 6 && (
+                <p className="mt-4 text-gray-500 text-sm text-center">
+                  已有账号？{' '}
+                  <button
+                    onClick={() => router.push('/login')}
+                    className="text-blue-500 hover:text-blue-600 underline"
+                  >
+                    直接登录
+                  </button>
+                </p>
+              )}
             </div>
-          )}
-
-
-          {/* 已有账号链接（仅在步骤6显示） */}
-          {currentStep === 6 && (
-            <p className="mt-4 text-gray-500 text-sm text-center">
-              已有账号？{' '}
-              <button
-                onClick={() => router.push('/login')}
-                className="text-blue-500 hover:text-blue-600 underline"
-              >
-                直接登录
-              </button>
-            </p>
           )}
         </div>
       </div>

@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import {
+  ENV_KEYS,
+  DEFAULT_NICKNAME,
+  DEFAULT_UNKNOWN
+} from '@/lib/constants'
 
 export async function POST(request: Request) {
   try {
@@ -38,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     // 4. 获取 API Key
-    const apiKey = process.env.DEEPSEEK_API_KEY
+    const apiKey = process.env[ENV_KEYS.DEEPSEEK_API_KEY]
     if (!apiKey) {
       return NextResponse.json(
         { error: '服务器配置错误' },
@@ -47,17 +52,17 @@ export async function POST(request: Request) {
     }
 
     // 5. 构建个性化提示词
-    const nickname = profile?.nickname || '球友'
-    const ageRange = profile?.age_range || '未知'
-    const playingYearsRange = profile?.playing_years_range || '未知'
+    const nickname = profile?.nickname || DEFAULT_NICKNAME
+    const ageRange = profile?.age_range || DEFAULT_UNKNOWN
+    const playingYearsRange = profile?.playing_years_range || DEFAULT_UNKNOWN
     const userPreferences = profile?.user_preferences || []
 
     // 构建个性化描述
     let personalization = ''
-    if (ageRange !== '未知') {
+    if (ageRange !== DEFAULT_UNKNOWN) {
       personalization += `用户年龄阶段：${ageRange}。`
     }
-    if (playingYearsRange !== '未知') {
+    if (playingYearsRange !== DEFAULT_UNKNOWN) {
       personalization += `球龄阶段：${playingYearsRange}。`
     }
     if (userPreferences && userPreferences.length > 0) {
